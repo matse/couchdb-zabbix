@@ -1,18 +1,24 @@
+#!/usr/bin/env python
+
 import sys
 import json
 import urllib2
+import base64
 
-def getFromDict(dataDict, mapList):
-    for k in mapList:
+
+def get_from_dict(data_dict, map_list):
+    """get the value out of response list"""
+    for k in map_list:
         try:
-            dataDict = dataDict[k]
+            data_dict = data_dict[k]
         except:
             sys.exit("ERROR: No key " + sys.argv[1])
-    return dataDict
+    return data_dict
 
-if len(sys.argv[1]) < 1:
+if len(sys.argv) < 2:
     print 'please, specify a metric.'
     print ' ex: ./couchdb-stats.py couchdb.httpd.aborted_requests.value'
+    sys.exit(1)
 
 try:
     req = urllib2.Request('http://127.0.0.1:5986/_stats')
@@ -21,10 +27,10 @@ except urllib2.URLError, e:
     print e.reason
     exit(1)
 
-metric = sys.argv[1].split('.')
+METRIC = sys.argv[1].split('.')
 
-res = getFromDict(json.load(stats_json), metric)
+RES = get_from_dict(json.load(STATS_JSON), METRIC)
 try:
-    print int(res)
+    print int(RES)
 except:
-    sys.exit('ERROR: Return value cant be converted to int... Value:' + str(res))
+    sys.exit('ERROR: Return value cant be converted to int... Value:' + str(RES))
